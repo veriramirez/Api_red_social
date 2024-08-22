@@ -15,10 +15,14 @@ se captura (catch) y se devuelve un mensaje de error con un código de estado 50
 (Error Interno del Servidor).
 */
 const list = async(req, res) => {
-
     try {
         const listaPersonas = await Persona.findAll();
-        res.status(200).send(listaPersonas);
+        if (listaPersonas.length > 0) {
+            res.status(200).send(listaPersonas);
+        } else {
+            res.status(404).send({ message: "Aun no hay registros" });
+        }
+
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -34,18 +38,41 @@ y se devuelve un mensaje de error con un código de estado 500
 (Error Interno del Servidor).
 */
 const create = async(req, res) => {
+    const { nombre, mail, edad } = req.body;
+    if (!nombre || !mail || !edad) {
+        return res.status(400).send({ message: "Faltan datos de completar" });
+    }
     try {
         const persona = await Persona.create(req.body);
         res.status(201).send(persona);
     } catch (error) {
-        res.status(500).send(error.message);
-        
+        if (error.name === "SequelizeUniqueConstraintError") {
+            res.status(400).send({ message: "Mail ya existente" });
+        } else {
+            res.status(500).send({
+                message: error.message,
+                nombre: error.name
+            });
+        }
     }
 };
 
+const findById = async(req, res) => {
+    try {
+        const persona = await Persona.findByPk(req.params.id);
+        if (persona) {
+            res.status(200).send(persona);
+        } else {
+            res.status(404).send({ message: "Not found" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Error interno del server" });
+    }
+}
 
 module.exports = {
     home,
     list,
-    create
+    create,
+    findById
 }
