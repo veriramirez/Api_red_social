@@ -1,6 +1,5 @@
 const { Sequelize } = require("sequelize");
 const parameters = require("../config/config");
-const { param } = require("../routes/personaRoutes");
 
 const sequelize = new Sequelize(
     parameters.database,

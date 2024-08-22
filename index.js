@@ -6,6 +6,7 @@ const personaRouter = require("./routes/personaRoutes");
 const app = express();
 
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api/personas", personaRouter);
 
 app.listen(PORT, () => {
