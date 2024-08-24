@@ -13,6 +13,14 @@ const Persona = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
+        oficinaId: {  // Agregando la clave foránea para Oficina
+            type: Sequelize.INTEGER,
+            references: {
+                model: 'Oficinas',  // Nombre del modelo al que se hace referencia
+                key: 'id',  // Clave primaria del modelo Oficina
+            },
+            allowNull: true,  // Puede ser null si la persona no está asignada a ninguna oficina
+        },
     }, {
         timestamps: false,
     })

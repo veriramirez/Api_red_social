@@ -16,5 +16,10 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.persona = require("./persona")(sequelize, Sequelize);
+db.oficina = require("./oficina")(sequelize, Sequelize);
+
+// Establecer relaciones
+db.oficina.hasMany(db.persona, { foreignKey: 'oficinaId' });
+db.persona.belongsTo(db.oficina, { foreignKey: 'oficinaId' });
 
 module.exports = db;
