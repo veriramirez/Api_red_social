@@ -40,7 +40,7 @@ y se devuelve un mensaje de error con un código de estado 500
 */
 const create = async(req, res) => {
     const { nombre, mail, edad } = req.body;
-    if (!nombre || !mail || !edad) {
+    if (!nombre) {
         return res.status(400).send({ message: "Faltan datos de completar" });
     }
     try {
@@ -71,58 +71,60 @@ const findById = async(req, res) => {
     }
 }
 
-const update = async (req, res) => {
+const update = async(req, res) => {
     try {
         const oficina = await Oficina.update(req.body, {
-            where: {id: req.params.id}
+            where: { id: req.params.id }
         })
-        if(oficina[0]){
+        if (oficina[0]) {
             const oficinaUpdated = await Oficina.findByPk(req.params.id);
             res.status(200).send({
                 message: "Actualizado",
                 oficina: oficinaUpdated
             });
-        } else{
-            res.status(404).send({message: "Not found"});
+        } else {
+            res.status(404).send({ message: "Not found" });
         }
     } catch (error) {
-        res.status(500).send({message: "Error interno del servidor"});
+        res.status(500).send({ message: "Error interno del servidor" });
     }
 }
 
-const buscarPorNombre = async (req, res) => {
+const buscarPorNombre = async(req, res) => {
     try {
         const keyword = req.body.keyword;
-        if(!keyword){
-            return res.status(400).send({message: "Debe proporcionar un keyword"});
+        if (!keyword) {
+            return res.status(400).send({ message: "Debe proporcionar un keyword" });
         }
         const results = await Oficina.findAll({
-            where: {nombre: {
-                [Op.like]: `%${keyword}%`
-                }}
+            where: {
+                nombre: {
+                    [Op.like]: `%${keyword}%`
+                }
+            }
         });
-        if(results.length > 0){
-            res.status(200).send({resultados: results});
-        } else{
-            res.status(404).send({message: "No hay resultados"});
+        if (results.length > 0) {
+            res.status(200).send({ resultados: results });
+        } else {
+            res.status(404).send({ message: "No hay resultados" });
         }
     } catch (error) {
-        res.status(500).send({message: "Error interno del servidor"});        
+        res.status(500).send({ message: "Error interno del servidor" });
     }
 }
 
-const deleteOficina = async (req, res) => {
+const deleteOficina = async(req, res) => {
     try {
         const oficina = await Oficina.destroy({
-            where: {id: req.params.id}
+            where: { id: req.params.id }
         });
-        if(oficina){
-            res.status(200).send({message: "Eliminado!!!"});
-        } else{
-            res.status(404).send({message: "Not found"});
+        if (oficina) {
+            res.status(200).send({ message: "Eliminado!!!" });
+        } else {
+            res.status(404).send({ message: "Not found" });
         }
     } catch (error) {
-        res.status(500).send({message: "Error interno del servidor", tipo: error.name});
+        res.status(500).send({ message: "Error interno del servidor", tipo: error.name });
     }
 }
 
