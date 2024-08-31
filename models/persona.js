@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 const Persona = (sequelize, Sequelize) => {
     return sequelize.define("Persona", {
         nombre: {
@@ -21,8 +23,20 @@ const Persona = (sequelize, Sequelize) => {
             },
             allowNull: true,  // Puede ser null si la persona no está asignada a ninguna oficina
         },
+        password: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
     }, {
         timestamps: false,
+        hooks: {
+            beforeCreate: async (persona) => {
+                if(persona.password){
+                    const salt = await bcrypt.genSalt(10);
+                    persona.password = await bcrypt.hash(persona.password, salt);
+                }
+            },
+        },
     })
 }
 
