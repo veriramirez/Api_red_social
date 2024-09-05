@@ -1,5 +1,6 @@
 const db = require("../models");
 const Oficina = db.oficina;
+const Persona = db.persona;
 const { Op, where } = require('sequelize');
 
 const home = (req, res) => {
@@ -17,7 +18,12 @@ se captura (catch) y se devuelve un mensaje de error con un código de estado 50
 */
 const list = async(req, res) => {
     try {
-        const listaOficinas = await Oficina.findAll();
+        const listaOficinas = await Oficina.findAll({
+            include: [{
+                model: Persona,
+                atributtes: ['nombre']
+            }]
+        });
         if (listaOficinas.length > 0) {
             res.status(200).send(listaOficinas);
         } else {

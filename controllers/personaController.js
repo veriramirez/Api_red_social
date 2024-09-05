@@ -1,5 +1,6 @@
 const db = require("../models");
 const Persona = db.persona;
+const Oficina = db.oficina;
 const { Op, where } = require('sequelize');
 
 const home = (req, res) => {
@@ -17,12 +18,34 @@ se captura (catch) y se devuelve un mensaje de error con un código de estado 50
 */
 const list = async(req, res) => {
     try {
-        const listaPersonas = await Persona.findAll();
-        if (listaPersonas.length > 0) {
-            res.status(200).send(listaPersonas);
-        } else {
-            res.status(404).send({ message: "Aun no hay registros" });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 2;
+
+        if (page < 1 || limit < 1) {
+            return res.status(400).send({
+                message: "Page and limit must be positive"
+            })
         }
+
+        const offset = (page - 1) * limit;
+
+        const { count, rows } = await Persona.findAndCountAll({
+            attributes: { exclude: ['password', 'oficinaId'] },
+            include: [{
+                model: Oficina,
+                attributes: ['nombre']
+            }],
+            limit: limit,
+            offset: offset
+        });
+
+        res.status(200).send({
+            totalItems: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            itemsPerPage: limit,
+            data: rows
+        })
 
     } catch (error) {
         res.status(500).send(error.message);
@@ -71,58 +94,60 @@ const findById = async(req, res) => {
     }
 }
 
-const update = async (req, res) => {
+const update = async(req, res) => {
     try {
         const persona = await Persona.update(req.body, {
-            where: {id: req.params.id}
+            where: { id: req.params.id }
         })
-        if(persona[0]){
+        if (persona[0]) {
             const personaUpdated = await Persona.findByPk(req.params.id);
             res.status(200).send({
                 message: "Actualizado",
                 persona: personaUpdated
             });
-        } else{
-            res.status(404).send({message: "Not found"});
+        } else {
+            res.status(404).send({ message: "Not found" });
         }
     } catch (error) {
-        res.status(500).send({message: "Error interno del servidor"});
+        res.status(500).send({ message: "Error interno del servidor" });
     }
 }
 
-const buscarPorNombre = async (req, res) => {
+const buscarPorNombre = async(req, res) => {
     try {
         const keyword = req.body.keyword;
-        if(!keyword){
-            return res.status(400).send({message: "Debe proporcionar un keyword"});
+        if (!keyword) {
+            return res.status(400).send({ message: "Debe proporcionar un keyword" });
         }
         const results = await Persona.findAll({
-            where: {nombre: {
-                [Op.like]: `%${keyword}%`
-                }}
+            where: {
+                nombre: {
+                    [Op.like]: `%${keyword}%`
+                }
+            }
         });
-        if(results.length > 0){
-            res.status(200).send({resultados: results});
-        } else{
-            res.status(404).send({message: "No hay resultados"});
+        if (results.length > 0) {
+            res.status(200).send({ resultados: results });
+        } else {
+            res.status(404).send({ message: "No hay resultados" });
         }
     } catch (error) {
-        res.status(500).send({message: "Error interno del servidor"});        
+        res.status(500).send({ message: "Error interno del servidor" });
     }
 }
 
-const deletePersona = async (req, res) => {
+const deletePersona = async(req, res) => {
     try {
         const persona = await Persona.destroy({
-            where: {id: req.params.id}
+            where: { id: req.params.id }
         });
-        if(persona){
-            res.status(200).send({message: "Eliminado!!!"});
-        } else{
-            res.status(404).send({message: "Escribi bien Go...."});
+        if (persona) {
+            res.status(200).send({ message: "Eliminado!!!" });
+        } else {
+            res.status(404).send({ message: "Escribi bien Go...." });
         }
     } catch (error) {
-        res.status(500).send({message: "Error interno del servidor", tipo: error.name});
+        res.status(500).send({ message: "Error interno del servidor", tipo: error.name });
     }
 }
 
