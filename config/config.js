@@ -2,7 +2,7 @@ const parameters = {
     username: "root",
     password: "1234",
     database: "mi_db",
-    host: "localhost",
+    host: "mysql-container",
     dialect: "mysql",
 };
 
