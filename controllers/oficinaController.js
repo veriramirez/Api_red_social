@@ -45,7 +45,7 @@ y se devuelve un mensaje de error con un código de estado 500
 (Error Interno del Servidor).
 */
 const create = async(req, res) => {
-    const { nombre, mail, edad } = req.body;
+    const { nombre } = req.body;
     if (!nombre) {
         return res.status(400).send({ message: "Faltan datos de completar" });
     }
@@ -54,7 +54,7 @@ const create = async(req, res) => {
         res.status(201).send(oficina);
     } catch (error) {
         if (error.name === "SequelizeUniqueConstraintError") {
-            res.status(400).send({ message: "Mail ya existente" });
+            res.status(400).send({ message: "Oficina ya existente" });
         } else {
             res.status(500).send({
                 message: error.message,

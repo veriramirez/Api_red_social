@@ -3,6 +3,8 @@ const Persona = db.persona;
 const Oficina = db.oficina;
 const { Op, where } = require('sequelize');
 
+
+
 const home = (req, res) => {
     res.status(200).send("Ruta principal de personas");
 }
@@ -19,7 +21,7 @@ se captura (catch) y se devuelve un mensaje de error con un código de estado 50
 const list = async(req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 2;
+        const limit = parseInt(req.query.limit) || 10;
 
         if (page < 1 || limit < 1) {
             return res.status(400).send({
