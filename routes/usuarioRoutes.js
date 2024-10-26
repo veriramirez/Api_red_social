@@ -8,3 +8,5 @@ const upload = require("../middlewares/uploadMiddleware");
 router.post("/register", usuarioController.register);
 router.put("/me", auth, upload.single('avatar'), usuarioController.update);
 router.get("/list", usuarioController.list);
+
+module.exports = router;
