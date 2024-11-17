@@ -145,6 +145,49 @@ router.put("/me", auth, upload.single('avatar'), usuarioController.update);
 router.get("/list", usuarioController.list);
 
 // Este háganlo uds!!!!!
+/**
+ * @swagger
+ * /usuarios/register:
+ *   post:
+ *     tags: [Usuarios]
+ *     summary: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               mail:
+ *                 type: string
+ *                 format: email
+ *               nickname:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 nombre:
+ *                   type: string
+ *                 mail:
+ *                   type: string
+ *                 nickname:
+ *                   type: string
+ *       400:
+ *         description: Bad request - missing or invalid fields
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/login", usuarioController.login);
 
 module.exports = router;
