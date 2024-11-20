@@ -26,6 +26,47 @@ const follow = async (req, res) => {
         
 };
 
+
+
+const unfollow = async (req, res) => {
+    const id_usuario = req.user.id;
+    const { id_usuario_seguido } = req.params;
+
+    const isFollowing = async (id_usuario, id_usuario_seguido) => {
+        try {
+          const following = await Following.findOne({
+            where: {
+              id_usuario: id_usuario,
+              id_usuario_seguido: id_usuario_seguido,
+            },
+          });
+      
+          return !!following; // Devuelve true si existe el seguimiento, false en caso contrario
+        } catch (error) {
+            console.error(error);
+            res.status(404).json({ message: 'Seguimiento no encontrado' });
+        }
+    }
+    const follows = await isFollowing(id_usuario, id_usuario_seguido);
+    if (follows){
+        try {
+            await Following.destroy({
+                where: {
+                    id_usuario: id_usuario,
+                    id_usuario_seguido: id_usuario_seguido
+                }
+            });
+            res.status(200).send({ message: "Seguimiento eliminado" });
+        
+        } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error de servidor' });
+        }
+    }
+}
+  
+
+
 // Obtener la lista de usuarios que el usuario sigue
 const getFollowing = async(req, res) => {
     const id_usuario = req.user.id;
@@ -53,5 +94,6 @@ const getFollowing = async(req, res) => {
 
 
 module.exports = {
-    follow,    
+    follow,
+    unfollow,    
 };
