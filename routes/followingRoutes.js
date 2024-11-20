@@ -98,4 +98,38 @@ router.delete("/:id_usuario_seguido", auth, followingController.unfollow);
  */
 
 router.get('/:id', auth, followingController.getFollowing);
+
+
+/**
+ * @swagger
+ * /followings/{id}/followers:
+ *   get:
+ *     tags: [Users]
+ *     summary: Obtiene la lista de seguidores de un usuario
+ *     description: Devuelve un listado de usuarios que siguen al usuario especificado.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Lista de seguidores
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Usuario no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id/followers', auth, followingController.getFollowers);
+
+//router.get('/users/:id/followers', auth, followingController.getFollowers);
+
 module.exports = router;

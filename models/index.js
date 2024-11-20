@@ -38,5 +38,5 @@ db.Usuario.belongsToMany(db.Usuario, {
     otherKey: 'id_usuario' // Clave foránea que referencia al usuario que esta siendo seguido
 });
 
-
 module.exports = db;
+

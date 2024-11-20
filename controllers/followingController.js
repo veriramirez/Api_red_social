@@ -93,8 +93,34 @@ const getFollowing = async(req, res) => {
 
 
 
+const getFollowers = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const user = await db.Usuario.findByPk(userId, {
+            include: [{
+                model: db.Usuario,
+                as: 'seguidores', // Cambia a 'seguidores' para obtener los que te siguen
+                attributes: ['id', 'nombre', 'nickname'],
+            }],
+        });
+
+        if (!user) {
+            return res.status(404).send({ error: 'Usuario no encontrado' });
+        }
+
+        res.status(200).send(user.seguidores);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+};
+
+
+
+
 module.exports = {
     follow,
     unfollow,
     getFollowing,
+    getFollowers,
 };
