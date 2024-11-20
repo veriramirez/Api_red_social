@@ -147,10 +147,10 @@ router.get("/list", usuarioController.list);
 // Este háganlo uds!!!!!
 /**
  * @swagger
- * /usuarios/register:
+ * /usuarios/login:
  *   post:
  *     tags: [Usuarios]
- *     summary: Register a new user
+ *     summary: Authenticate user via email and password
  *     requestBody:
  *       required: true
  *       content:
@@ -158,35 +158,27 @@ router.get("/list", usuarioController.list);
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
- *                 type: string
  *               mail:
  *                 type: string
  *                 format: email
- *               nickname:
- *                 type: string
  *               password:
  *                 type: string
  *     responses:
- *       201:
- *         description: User created successfully
+ *       200:
+ *         description: send token
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                 nombre:
- *                   type: string
- *                 mail:
- *                   type: string
- *                 nickname:
+ *                 token:
  *                   type: string
  *       400:
- *         description: Bad request - missing or invalid fields
+ *         description: password incorrecto
+ *       404:
+ *         description: usuario no encontrado
  *       500:
- *         description: Internal server error
+ *         description: error en el servidor
  */
 router.post("/login", usuarioController.login);
 
