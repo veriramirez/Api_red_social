@@ -95,5 +95,6 @@ const getFollowing = async(req, res) => {
 
 module.exports = {
     follow,
-    unfollow,    
+    unfollow,
+    getFollowing,
 };
