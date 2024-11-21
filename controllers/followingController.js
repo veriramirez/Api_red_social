@@ -116,6 +116,37 @@ const getFollowers = async (req, res) => {
 };
 
 
+const getMutualFollowers = async (req, res) => {
+    const userId = req.user.id;
+    const { limit = 10, offset = 0, sort = 'createdAt' } = req.query;
+
+    try {
+        const user = await db.Usuario.findByPk(userId, {
+            include: [{
+                model: db.Usuario,
+                as: 'seguidos',
+                through: {
+                    where: {
+                        id_usuario_seguido: userId
+                    }
+                },
+                attributes: ['id', 'nombre', 'nickname'],
+                order: [[sort, 'DESC']] // Ordenar por createdAt por defecto
+            }],
+            limit,
+            offset
+        });
+
+        if (!user) {
+            return res.status(404).send({ error: 'Usuario no encontrado' });
+        }
+
+        res.status(200).send(user.seguidos);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+};
+
 
 
 module.exports = {
@@ -123,4 +154,5 @@ module.exports = {
     unfollow,
     getFollowing,
     getFollowers,
+    getMutualFollowers,
 };

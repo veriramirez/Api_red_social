@@ -130,6 +130,38 @@ router.get('/:id', auth, followingController.getFollowing);
  */
 router.get('/:id/followers', auth, followingController.getFollowers);
 
-//router.get('/users/:id/followers', auth, followingController.getFollowers);
+
+
+/**
+ * @swagger
+ * /followings/MutualFollowers:
+ *   get:
+ *     tags: [Users]
+ *     summary: Obtiene la lista de usuarios que siguen al usuario autenticado y que también son seguidos por él (seguidores mutuos)
+ *     description: Devuelve un listado de usuarios con los que hay una relación de seguimiento mutuo. Necesita autenticación para acceder.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Lista de seguidores mutuos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Usuario no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+
+
+router.get('/MutualFollowers', auth, followingController.getMutualFollowers);
 
 module.exports = router;
