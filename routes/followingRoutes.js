@@ -3,7 +3,6 @@ const router = express.Router();
 const followingController = require("../controllers/followingController");
 const auth = require("../middlewares/authmiddleware");
 
-//const upload = require("../middlewares/uploadMiddleware");
 
 /**
  * @swagger
@@ -160,7 +159,6 @@ router.get('/:id/followers', auth, followingController.getFollowers);
  *       500:
  *         description: Error interno del servidor
  */
-
 
 router.get('/MutualFollowers', auth, followingController.getMutualFollowers);
 
