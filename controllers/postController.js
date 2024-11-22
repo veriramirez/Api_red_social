@@ -47,8 +47,71 @@ const listgetposts = async(req, res) => {
 
 
 
+//permite modificar el post
+//buscar el post del usuario
+//si no tiene post mensaje
+//si tiene post actualizar
+const updatePosts = async (req, res) => {
+    try {
+      const id_usuario = req.user.id;
+      const { id_post } = req.params;
+      const { titulo, contenido } = req.body;
+  
+      const listaPost = await Post.findOne({ where: {id:id_post, id_usuario:id_usuario } });
+  
+      if (!listaPost) {
+        return res.status(404).send({ error: 'El usuario no tiene posts' });
+      }
+  
+      listaPost.titulo = titulo;
+      listaPost.contenido = contenido;
+      await listaPost.save();
+  
+      // Retrieve the updated post data after saving
+      const updatedPost = await Post.findByPk(id_post);
+  
+      res.status(200).send({
+        message: "Publicacion actualizada",
+        post: updatedPost, // Include the updated post in the response
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error de servidor" });
+    }
+  };
 
+
+//para eliminar post
+//quiero traer los id_post que tenga id_usuario
+//si el id_post a eliminar existe, se elimina 
+const deletePost = async (req, res) => {
+    const id_usuario = req.user.id;
+    const { id_post } = req.params;
+  
+    try {
+      const deletedPost = await Post.destroy({
+        where: {
+          id: id_post,
+          id_usuario: id_usuario
+        }
+      });
+  
+      if (deletedPost === 0) {
+        return res.status(404).json({ message: 'Post no encontrado' });
+      }
+  
+      res.status(200).json({ message: 'Post borrado' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error de servidor' });
+    }
+  };
+
+
+  
 module.exports = {
     newPost,
     listgetposts,
+    updatePosts,
+    deletePost,
 };

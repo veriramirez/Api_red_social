@@ -1,5 +1,10 @@
 const Post = (sequelize, Sequelize) => {
     return sequelize.define("Post", {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+          },
         id_usuario: {
             type: Sequelize.INTEGER,
             allowNull: false,
@@ -17,9 +22,10 @@ const Post = (sequelize, Sequelize) => {
         contenido: {
             type: Sequelize.TEXT,
             allowNull: false,            
-        },         
+        },       
     }, {
-        timestamps: false,
+        timestamps: true,
+       
     });
 };
 
