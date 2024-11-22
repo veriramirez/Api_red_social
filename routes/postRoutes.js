@@ -161,6 +161,103 @@ router.put("/:id_post", auth, postController.updatePosts);
 
 router.delete("/:id_post", auth, postController.deletePost);
 
-//La ruta definida en router.delete podría no coincidir exactamente con el patrón de URL en tu documentación Swagger. 
-//segúrate de que la ruta (/:id_post) y el método HTTP (DELETE) sean consistentes.
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         id_usuario:
+ *           type: integer
+ *         titulo:
+ *           type: string
+ *         contenido:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *
+ * /posts/{id_post}:
+ *   get:
+ *     tags: [Post]
+ *     summary: Obtiene una publicación específica
+ *     parameters:
+ *       - in: path
+ *         name: id_post
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la publicación
+ *     security:
+ *       - ApiTokenAuth: []
+ *     responses:
+ *       200:
+ *         description: Publicación encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       404:
+ *         description: Publicación no encontrada
+ *       403:
+ *         description: No tienes permiso para ver esta publicación
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get("/:id_post", auth, postController.getPost);
+
+
+
+//GET /user-posts/:id Muestra los posts de un usuario determinado
+//(requiere autenticación; solo accesible si sigo a dicho usuario
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         id_usuario:
+ *           type: integer
+ *         titulo:
+ *           type: string
+ *         contenido:
+ *           type: string
+ *
+ * /posts/user-posts/{id_usuario_seguido}:
+ *   get:
+ *     tags:
+ *       - Post
+ *     summary: Devuelve una lista de posts del usuario especificado si el usuario autenticado lo sigue.
+ *     parameters:
+ *       - in: path
+ *         name: id_usuario_seguido
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del usuario cuyos posts se quieren obtener
+ *     responses:
+ *       200:
+ *         description: Lista de posts del usuario seguido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Post'
+ *       403:
+ *         description: No tienes permiso para ver los posts de este usuario
+ *       404:
+ *         description: No se encontraron posts para este usuario
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get("/user-posts/:id_usuario_seguido", auth, postController.listgetpostsseguido);
 module.exports = router;
